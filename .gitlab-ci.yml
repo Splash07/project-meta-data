@@ -1,0 +1,24 @@
+variables:
+  IMAGE_NAME: project-meta-data
+
+image: docker:19.03.0
+services:
+  - docker:19.03.0-dind
+stages:
+  - build-image
+  #- deploy
+
+build-image:
+  stage: build-image
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build –build-arg PROJECT_NAME=$IMAGE_NAME –build-arg APP_ENV=$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+
+#deploy:
+#  stage: deploy
+#  script:
+#    - apk add curl
+#    - echo $DOMAIN
+#    - curl -X POST -F token=ad0268e1cdddead53988e6fb3796f9 -F ref=master -F "variables[DOMAIN]=$DOMAIN" -F "variables#[IMAGE_TAG]=$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA" https://gitlab.com/api/v4/projects/20883930/trigger/pipeline
+
