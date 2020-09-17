@@ -15,7 +15,7 @@ ARG APP_ENV
 
 ENV APPLICATION_ENV ${APP_ENV}
 
-COPY --from=builder ${SOURCES}/${PROJECT_NAME} .
-COPY --from=builder ${SOURCES}/config/{$APP_ENV} ./config/${APP_ENV}/
+COPY --from=builder /src/${PROJECT_NAME} .
+COPY --from=builder /src/config/{$APP_ENV} ./config/${APP_ENV}/
 
 ENTRYPOINT ["${SOURCES}/${PROJECT_NAME}"]
