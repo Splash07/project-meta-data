@@ -19,6 +19,7 @@ build-binary:
   script:
     - apk add git musl-dev gcc
     - go build -o app/$IMAGE_NAME
+    - ls -R -la
   artifacts:
     paths:
       - app
@@ -39,6 +40,7 @@ build-image:
     - echo 'ENTRYPOINT ["/src/app/'${IMAGE_NAME}'"]' >> Dockerfile
 
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - ls -R -l
     - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
