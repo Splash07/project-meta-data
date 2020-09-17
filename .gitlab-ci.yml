@@ -1,18 +1,45 @@
-variables:
-  IMAGE_NAME: project-meta-data
-
 image: docker:19.03.0
 services:
   - docker:19.03.0-dind
 stages:
+  - build-binary
   - build-image
   #- deploy
 
+before_script:
+  - IMAGE_NAME=$(echo $CI_PROJECT_PATH | sed "s/\//--/g")
+
+build-binary:
+  stage: build-binary
+  image: golang:1.13.5-alpine3.11
+  only:
+    - master
+    - dev
+    - sandbox
+  script:
+    - apk add git musl-dev gcc
+    - go build -o app/$IMAGE_NAME
+  artifacts:
+    paths:
+      - app
+    expire_in: 1 day
+
 build-image:
   stage: build-image
+  image: docker:19.03.5
   script:
+    - rm -f Dockerfile
+    - rm -rf .git
+    - echo 'FROM alpine' >> Dockerfile
+    - echo 'RUN apk add tzdata ca-certificates' >> Dockerfile
+    - echo 'ENV SOURCES /src' >> Dockerfile
+    - echo 'WORKDIR ${SOURCES}' >> Dockerfile
+    - echo 'COPY . ${SOURCES}' >> Dockerfile
+    - echo 'ENV APPLICATION_ENV' $CI_COMMIT_REF_NAME >> Dockerfile
+    - echo 'ENTRYPOINT ["/src/app/'${IMAGE_NAME}'"]' >> Dockerfile
+
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build --build-arg PROJECT_NAME=$IMAGE_NAME --build-arg APP_ENV=$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA .
+    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 #deploy:
