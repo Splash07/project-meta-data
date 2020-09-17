@@ -7,7 +7,7 @@ stages:
   #- deploy
 
 before_script:
-  - IMAGE_NAME=$(echo $CI_PROJECT_PATH | sed "s/\//--/g")
+  - IMAGE_NAME=project-meta-data
 
 build-binary:
   stage: build-binary
