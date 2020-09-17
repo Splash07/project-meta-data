@@ -48,4 +48,4 @@ trigger_build:
   stage: deploy
   script:
     - apk add curl
-    - curl -X POST -F token=384818ff8f5e9ede3e948593a90dba -F PROJECT_NAME=$IMAGE_NAME -F IMAGE_TAG=$CI_COMMIT_SHORT_SHA -F REF_NAME=$CI_COMMIT_REF_NAME https://gitlab.com/api/v4/projects/21194820/trigger/pipeline
+    - curl -X POST -F token=384818ff8f5e9ede3e948593a90dba -F ref=$CI_COMMIT_REF_NAME -F PROJECT_NAME=$IMAGE_NAME -F IMAGE_TAG=$CI_COMMIT_SHORT_SHA -F REF_NAME=$CI_COMMIT_REF_NAME https://gitlab.com/api/v4/projects/21194820/trigger/pipeline
