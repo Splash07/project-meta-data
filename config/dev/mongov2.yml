@@ -1,0 +1,8 @@
+'master-data':
+  name: 'master-data'
+  dbname: "meta-data"
+  address:
+    - "35.240.191.28:27017"
+  user: "root"
+  pass: "goda_staging"
+  timeout: 10
