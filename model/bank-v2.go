@@ -12,6 +12,7 @@ type BankV2 struct {
 	Active    bool   `json:"active" bson:"active,omitempty"`
 	HasBranch bool   `json:"has_branch" bson:"has_branch"`
 	Status    int    `json:"status" bson:"status,omitempty"`
+	LocationID int	 `json:"location_id" bson:"location_id"`
 
 	//
 	CreatedIP       string     `json:"created_ip,omitempty" bson:"created_ip,omitempty"`
